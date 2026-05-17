@@ -56,12 +56,6 @@ async def get_post():
 
     return {"data": posts}
 
-
-# @app.post("/create_posts")
-# async def create_post(payload: dict = Body(...)):
-#     print(payload)
-#     return {"new_post":f"title: {payload['title']}, content: {payload['content']}"}
-
 @app.post("/posts" ,status_code = status.HTTP_201_CREATED)
 async def create_post(post : post):
 
@@ -69,16 +63,9 @@ async def create_post(post : post):
                     VALUES(%s,%s,%s,%s) RETURNING *""",(post.title,post.content,post.publisher,post.rating))
     conn.commit()
     new_post=cursor.fetchone()
-    # post_dict =post.dict()
-    # post_dict["id"] = randrange(0,1000000)
-    # my_posts.append(post_dict)
+
     return {"data" :new_post}
 
-
-# @app.get("/posts/{id}")
-# async def get_post(id):
-#     print(id)
-#     return {"data" :my_posts[int(id)]}
 
 @app.get ("/posts/latest")
 async def get_latest_post():
@@ -100,7 +87,6 @@ async def delete_post(id : int):
         raise HTTPException (status_code = status.HTTP_404_NOT_FOUND,detail=f"post with id : {id} was not found")
     my_posts.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
 
 
 @app.put("/posts/{id}")
